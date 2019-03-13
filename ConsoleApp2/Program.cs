@@ -70,7 +70,7 @@ namespace BankAccounts
         }
         public static void Main()
         {
-            BankAccount ba = new.BankAccount("Mr.BRYan Walton", 11.99);
+            BankAccount ba = newBankAccount("Mr.BRYan Walton", 11.99);
             ba.Credit(5.77);
             ba.Debit(11.22);
             Console.WriteLine("Current balance is ${0}", ba.Balance);
