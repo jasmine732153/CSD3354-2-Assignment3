@@ -7,6 +7,11 @@ namespace BankTests
 {
     [TestClass]
     public class BankAccountTest
+    { 
+        public const string DebitAmountExceedsBalanceMessage = "Debit amount exceeds balance";
+        public const string DebitAmounlessThanZeroMessage = "Debit amount is less than zero";
+
+        
     {
         [TestMethod]
 
@@ -35,5 +40,8 @@ namespace BankTests
         double beginingBalance = 11.99;
         double debitAmount = -100.00;
         BankAccount account = new BankAccount("Mr.Bryan Walton", beginingBalance);
+        // act
+        account.Debit(debitAmount);
+        // Asert is handled by the ExpectedExpection attribute on the test method.
     }
 }
