@@ -1,79 +1,98 @@
 ﻿using System;
-using BankAccounts;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace UnitTestProject1
+namespace Bankaccounts
 {
-    [TestClass]
-    public class BankTests
+
+
+
+    public class BankAccount
+
     {
-        [TestMethod]
-        public void Debit_Withvalidamount_UpdatesBalance()
+
+        public const string DebitamountExceedsBalanceMessage = "Debit amount exceeds balance";
+        public const string DebitamountLessThanZeroMessage = "Debit amount is less than zero";
+        private string m_customerName;
+        private double m_balance;
+        private bool m_frozen = false;
+        private BankAccount()
         {
-            //Arrange
-            double beginningBalance = 11.99;
-            double debitAmount = 4.55;
-            double expected = 7.44;
-            BankAccount account = new BankAccount("Mr. Bryan Walton", beginningBalance);
 
-            // Act
-            account.Debit(debitAmount);
-
-            //Assert
-            double actual = account.Balance;
-            Assert.AreEqual(expected, actual, 0.01, "Account not debited correctly");
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Debit_WhenAmountIsLessThanZero_ShouldThrowArgumentOutOfRange()
+        public BankAccount(string customerName, double balance)
         {
-            // Arrange
-            double beginningBalance = 11.99;
-            double debitAmount = -100.00;
-            BankAccount account = new BankAccount("Mr. Bryan Walton", beginningBalance);
-
-            //Act
-            account.Debit(debitAmount);
-
-            //Assert is handled by the ExpectedException  attribute on the test method
-
-
-
+            m_customerName = customerName;
+            m_balance = balance;
 
         }
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void Debit_WhenAmountIsMoreThanBalance_ShouldThrowArgumentOutOfRange()
+        public string CustomerName
         {
-            // Arrange
-            double beginningBalance = 11.99;
-            double debitAmount = 20.0;
-            BankAccount account = new BankAccount("Mr. Bryan Walton", beginningBalance);
+            get { return m_customerName; }
+        }
+        public double Balance
+        {
+            get { return m_balance; }
+        }
 
-            //Act
-            try
+
+        public void Debit(double amount)
+        {
+            if (m_frozen)
             {
-                account.Debit(debitAmount);
+                throw new Exception("Account frozen");
             }
-
-            catch (ArgumentOutOfRangeException e)
+            if (amount > m_balance)
             {
-                //Assert
-                StringAssert.Contains(e.Message, BankAccount.DebitamountExceedsBalanceMessage);
+                throw new ArgumentOutOfRangeException("amount", amount, DebitamountExceedsBalanceMessage);
             }
+            if (amount < 0)
+            {
+                throw new ArgumentOutOfRangeException("amount", amount, DebitamountLessThanZeroMessage);
+            }
+            m_balance -= amount;
 
 
         }
 
+        public void Credit(double amount)
+        {
+            if (m_frozen)
+            {
+                throw new Exception("frozen");
+            }
+            if (amount < 0)
+            {
+                throw new ArgumentOutOfRangeException("amount");
+            }
+            m_balance += amount;
+        }
+        private void FreezeAccount()
+        {
+            m_frozen = true;
+
+        }
+        private void UnfreezeAccount()
+        {
+            m_frozen = false;
+        }
+
+        static void Main(string[] args)
+        {
+
+            BankAccount ba = new BankAccount("Mr. Bryan Walton", 11.99);
+            ba.Credit(5.77);
+            ba.Debit(11.22);
+            Console.WriteLine("Current balance is ${0}", ba.Balance);
 
 
-
+        }
 
     }
 }
-
-
 
 
 
